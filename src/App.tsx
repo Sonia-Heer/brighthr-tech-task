@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import styles from "./App.module.css";
 import { DocumentCard } from "./components/DocumentCard";
 import { mockDocuments } from "./data/mockDocuments";
 import type { DocumentItem, FolderItem } from "./types/documents";
-import { isFolder } from "./types/documents";
+import { Breadcrumbs } from "./components/Breadcrumbs";
+import { SortSelect, type SortOption } from "./components/SortSelect";
+import { sortDocuments } from "./utils/sortDocuments";
 
 type Crumb = {
   label: string;
@@ -11,20 +13,31 @@ type Crumb = {
 };
 
 export default function App() {
-  const [path, setPath] = useState<Crumb[]>([
+  const [breadcrumbs, setBreadcrumbs] = useState<Crumb[]>([
     { label: "Home", items: mockDocuments },
   ]);
 
-  const current = path[path.length - 1];
-  const items = current.items;
+  const [sort, setSort] = useState<SortOption>("");
 
-  function openFolder(folder: FolderItem) {
-    setPath((prev) => [...prev, { label: folder.name, items: folder.files }]);
-  }
+  const currentItems = breadcrumbs[breadcrumbs.length - 1].items;
 
-  function goToCrumb(index: number) {
-    setPath((prev) => prev.slice(0, index + 1));
-  }
+  const visibleItems = useMemo(
+    () => sortDocuments(currentItems, sort),
+    [currentItems, sort],
+  );
+
+  const openFolder = useCallback((folder: FolderItem) => {
+    setBreadcrumbs((prev) => [
+      ...prev,
+      { label: folder.name, items: folder.files },
+    ]);
+  }, []);
+
+  const goToCrumb = useCallback((index: number) => {
+    setBreadcrumbs((prev) => prev.slice(0, index + 1));
+  }, []);
+
+  const pathKey = breadcrumbs.map((b) => b.label).join("/");
 
   return (
     <main className={styles.app}>
@@ -32,49 +45,21 @@ export default function App() {
         <h1 className={styles.app__title}>Documents & Files</h1>
       </header>
 
-      <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-        {path.map((crumb, index) => {
-          const isLast = index === path.length - 1;
-
-          return (
-            <span
-              key={`${crumb.label}-${index}`}
-              className={styles.breadcrumbs__item}
-            >
-              <button
-                type="button"
-                className={styles.breadcrumbs__link}
-                onClick={() => goToCrumb(index)}
-                disabled={isLast}
-              >
-                {crumb.label}
-              </button>
-
-              {!isLast && <span className={styles.breadcrumbs__sep}>/</span>}
-            </span>
-          );
-        })}
-      </nav>
+      <Breadcrumbs
+        crumbs={breadcrumbs.map((b) => ({ label: b.label }))}
+        onSelect={goToCrumb}
+      />
 
       <div className={styles.controls}>
-        <input
-          className={styles.controls__search}
-          placeholder="Search"
-          aria-label="Search files"
-        />
-        <select className={styles.controls__sort} aria-label="Sort">
-          <option value="">Sort by</option>
-          <option value="name-asc">Name (A–Z)</option>
-          <option value="date-desc">Date (Newest)</option>
-          <option value="date-asc">Date (Oldest)</option>
-        </select>
+        <SortSelect value={sort} onChange={setSort} />
       </div>
 
       <section className={styles.grid} aria-label="Documents grid">
-        {items.map((item) => {
-          const key = isFolder(item)
-            ? `folder-${item.name}`
-            : `file-${item.name}-${item.added}`;
+        {visibleItems.map((item) => {
+          const key =
+            item.kind === "folder"
+              ? `folder-${pathKey}-${item.name}`
+              : `file-${pathKey}-${item.name}-${item.added}`;
 
           return (
             <DocumentCard key={key} item={item} onOpenFolder={openFolder} />

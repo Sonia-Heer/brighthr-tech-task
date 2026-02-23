@@ -1,10 +1,12 @@
-export type FileType = "pdf" | "doc" | "csv" | "mov";
+export type FileType = "pdf" | "doc" | "csv";
+
+export type IsoDateString = string;
 
 export type FileItem = {
   kind: "file";
   type: FileType;
   name: string;
-  added: string;
+  added: IsoDateString;
 };
 
 export type FolderItem = {
@@ -16,9 +18,9 @@ export type FolderItem = {
 export type DocumentItem = FileItem | FolderItem;
 
 export function isFolder(item: DocumentItem): item is FolderItem {
-  return "files" in item;
+  return item.kind === "folder";
 }
 
 export function isFile(item: DocumentItem): item is FileItem {
-  return !("files" in item);
+  return item.kind === "file";
 }

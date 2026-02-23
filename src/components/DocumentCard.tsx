@@ -1,8 +1,5 @@
-import {
-  isFolder,
-  type DocumentItem,
-  type FolderItem,
-} from "../types/documents";
+import { memo } from "react";
+import type { DocumentItem, FolderItem } from "../types/documents";
 import styles from "./DocumentCard.module.css";
 
 import folderImg from "../assets/folder-placeholder.png";
@@ -10,27 +7,30 @@ import fileImg from "../assets/file-placeholder.png";
 
 type Props = {
   item: DocumentItem;
-  onOpenFolder?: (folder: FolderItem) => void;
+  onOpenFolder: (folder: FolderItem) => void;
 };
 
-export function DocumentCard({ item, onOpenFolder }: Props) {
-  const folder = isFolder(item);
-  const previewSrc = folder ? folderImg : fileImg;
+export const DocumentCard = memo(function DocumentCard({
+  item,
+  onOpenFolder,
+}: Props) {
+  const isFolder = item.kind === "folder";
+  const previewSrc = isFolder ? folderImg : fileImg;
 
   function handleClick() {
-    if (!folder) return;
-    onOpenFolder?.(item);
+    if (isFolder) onOpenFolder(item);
   }
+
+  const ariaLabel = isFolder ? `Open folder ${item.name}` : `File ${item.name}`;
 
   return (
     <article className={styles.card}>
       <button
         className={styles.card__button}
         type="button"
-        aria-disabled={!folder}
-        tabIndex={folder ? 0 : -1}
+        disabled={!isFolder}
         onClick={handleClick}
-        aria-label={folder ? `Open folder ${item.name}` : `File ${item.name}`}
+        aria-label={ariaLabel}
       >
         <div className={styles.card__preview} aria-hidden="true">
           <img className={styles.card__previewImg} src={previewSrc} alt="" />
@@ -40,9 +40,12 @@ export function DocumentCard({ item, onOpenFolder }: Props) {
           <p className={styles.card__title}>{item.name}</p>
 
           <div className={styles.card__meta}>
-            {folder ? (
+            {isFolder ? (
               <>
-                <span>{item.files.length} item(s)</span>
+                <span>
+                  {item.files.length}{" "}
+                  {item.files.length === 1 ? "item" : "items"}
+                </span>
                 <span className={styles.textHint}>Click to open</span>
               </>
             ) : (
@@ -55,11 +58,11 @@ export function DocumentCard({ item, onOpenFolder }: Props) {
 
           <div className={styles.card__actions}>
             <span className={styles.typeBadge}>
-              {folder ? "Folder" : item.type}
+              {isFolder ? "Folder" : item.type.toUpperCase()}
             </span>
           </div>
         </div>
       </button>
     </article>
   );
-}
+});
