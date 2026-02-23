@@ -1,0 +1,40 @@
+.app {
+  max-width: 1680px;
+  margin: 68px auto;
+  padding: 0 18px 40px;
+}
+
+.app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0 18px;
+  max-width: 500px;
+}
+
+.controls__search,
+.controls__sort {
+  width: 50%;
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: white;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}

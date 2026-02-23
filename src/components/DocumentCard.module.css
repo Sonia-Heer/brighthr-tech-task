@@ -1,0 +1,66 @@
+.card {
+  background: white;
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.card__preview {
+  height: 140px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  display: grid;
+  place-items: center;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.card__previewImg {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+.card__body {
+  padding: 12px 12px 14px;
+}
+
+.card__title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.card__actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.typeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  background: rgba(15, 23, 42, 0.04);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.85);
+}
+
+.textHint {
+  color: rgba(15, 23, 42, 0.75);
+  font-size: 12px;
+}

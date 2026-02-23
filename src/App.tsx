@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import styles from "./App.module.css";
+import { DocumentCard } from "./components/DocumentCard";
+import { mockDocuments } from "./data/mockDocuments";
+import { isFolder } from "./types/documents";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <main className={styles.app}>
+      <header className={styles.app__header}>
+        <h1 className={styles.app__title}>Documents & Files</h1>
+      </header>
 
-export default App
+      <div className={styles.controls}>
+        <input
+          className={styles.controls__search}
+          placeholder="Search"
+          aria-label="Search files"
+        />
+        <select className={styles.controls__sort} aria-label="Sort">
+          <option value="">Sort by</option>
+          <option value="name-asc">Name (A–Z)</option>
+          <option value="date-desc">Date (Newest)</option>
+          <option value="date-asc">Date (Oldest)</option>
+        </select>
+      </div>
+
+      <section className={styles.grid} aria-label="Documents grid">
+        {mockDocuments.map((item) => {
+          const key = isFolder(item)
+            ? `folder-${item.name}`
+            : `file-${item.name}`;
+          return <DocumentCard key={key} item={item} />;
+        })}
+      </section>
+    </main>
+  );
+}
