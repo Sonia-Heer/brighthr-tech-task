@@ -23,7 +23,11 @@
   cursor: pointer;
 }
 
-.card__button[aria-disabled="true"] {
+.card__button:enabled {
+  cursor: pointer;
+}
+
+.card__button:disabled {
   cursor: default;
 }
 
