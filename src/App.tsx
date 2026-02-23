@@ -33,9 +33,9 @@ export default function App() {
     ]);
   }, []);
 
-  const goToCrumb = useCallback((index: number) => {
+  const goToCrumb = (index: number) => {
     setBreadcrumbs((prev) => prev.slice(0, index + 1));
-  }, []);
+  };
 
   const pathKey = breadcrumbs.map((b) => b.label).join("/");
 
