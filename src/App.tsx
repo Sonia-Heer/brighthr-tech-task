@@ -37,11 +37,6 @@ export default function App() {
     setBreadcrumbs((prev) => prev.slice(0, index + 1));
   }, []);
 
-  const crumbs = useMemo(
-    () => breadcrumbs.map((b) => ({ label: b.label })),
-    [breadcrumbs],
-  );
-
   const pathKey = breadcrumbs.map((b) => b.label).join("/");
 
   return (
@@ -50,7 +45,10 @@ export default function App() {
         <h1 className={styles.app__title}>Documents & Files</h1>
       </header>
 
-      <Breadcrumbs crumbs={crumbs} onSelect={goToCrumb} />
+      <Breadcrumbs
+        crumbs={breadcrumbs.map((b) => ({ label: b.label }))}
+        onSelect={goToCrumb}
+      />
 
       <div className={styles.controls}>
         <SortSelect value={sort} onChange={setSort} />
