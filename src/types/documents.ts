@@ -1,4 +1,4 @@
-export type FileType = "pdf" | "doc" | "csv";
+export type FileType = "pdf" | "doc" | "csv" | "mov";
 
 export type IsoDateString = string;
 
