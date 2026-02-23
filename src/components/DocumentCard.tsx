@@ -1,22 +1,36 @@
-import { isFolder, type DocumentItem } from "../types/documents";
+import {
+  isFolder,
+  type DocumentItem,
+  type FolderItem,
+} from "../types/documents";
 import styles from "./DocumentCard.module.css";
+
 import folderImg from "../assets/folder-placeholder.png";
 import fileImg from "../assets/file-placeholder.png";
 
 type Props = {
   item: DocumentItem;
+  onOpenFolder?: (folder: FolderItem) => void;
 };
 
-export function DocumentCard({ item }: Props) {
-  const previewSrc = isFolder(item) ? folderImg : fileImg;
+export function DocumentCard({ item, onOpenFolder }: Props) {
+  const folder = isFolder(item);
+  const previewSrc = folder ? folderImg : fileImg;
+
+  function handleClick() {
+    if (!folder) return;
+    onOpenFolder?.(item);
+  }
 
   return (
     <article className={styles.card}>
-      <div
+      <button
         className={styles.card__button}
-        aria-label={
-          isFolder(item) ? `Folder ${item.name}` : `File ${item.name}`
-        }
+        type="button"
+        aria-disabled={!folder}
+        tabIndex={folder ? 0 : -1}
+        onClick={handleClick}
+        aria-label={folder ? `Open folder ${item.name}` : `File ${item.name}`}
       >
         <div className={styles.card__preview} aria-hidden="true">
           <img className={styles.card__previewImg} src={previewSrc} alt="" />
@@ -26,7 +40,7 @@ export function DocumentCard({ item }: Props) {
           <p className={styles.card__title}>{item.name}</p>
 
           <div className={styles.card__meta}>
-            {isFolder(item) ? (
+            {folder ? (
               <>
                 <span>{item.files.length} item(s)</span>
                 <span className={styles.textHint}>Click to open</span>
@@ -41,11 +55,11 @@ export function DocumentCard({ item }: Props) {
 
           <div className={styles.card__actions}>
             <span className={styles.typeBadge}>
-              {isFolder(item) ? "Folder" : item.type}
+              {folder ? "Folder" : item.type}
             </span>
           </div>
         </div>
-      </div>
+      </button>
     </article>
   );
 }

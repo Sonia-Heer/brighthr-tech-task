@@ -6,6 +6,27 @@
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
 }
 
+.card__button {
+  appearance: none;
+  -webkit-appearance: none;
+
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  text-align: left;
+  font: inherit;
+  color: inherit;
+
+  cursor: pointer;
+}
+
+.card__button[aria-disabled="true"] {
+  cursor: default;
+}
+
 .card__preview {
   height: 140px;
   border-bottom: 1px solid rgba(15, 23, 42, 0.1);
